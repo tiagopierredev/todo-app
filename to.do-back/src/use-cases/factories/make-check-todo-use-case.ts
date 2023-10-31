@@ -1,6 +1,6 @@
 import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository";
 import { PrismaTodoRepository } from "@/repositories/prisma/prisma-todo-repository";
-import { CheckTodoUseCase } from "../checkTodo";
+import { CheckTodoUseCase } from "../check-todo";
 
 export function makeCheckedTodoUseCase() {
   const usersRepository = new PrismaUsersRepository();

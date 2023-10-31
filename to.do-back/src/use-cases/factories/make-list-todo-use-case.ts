@@ -1,6 +1,6 @@
 import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository";
 import { PrismaTodoRepository } from "@/repositories/prisma/prisma-todo-repository";
-import { ListTodoUseCase } from "../listTodo";
+import { ListTodoUseCase } from "../list-todo";
 
 export function makeListTodoUseCase() {
   const usersRepository = new PrismaUsersRepository();
