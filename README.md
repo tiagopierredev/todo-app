@@ -35,8 +35,7 @@ This project is a TODO list application that I built from the ground up. It incl
 
 To get started with this project, follow these steps:
 
-1. Clone the repository:
-
+1. Clone the repository: https://github.com/tiagopierredev/todoapp.git
 
 2. Install the required dependencies for the back-end and front-end.
 
