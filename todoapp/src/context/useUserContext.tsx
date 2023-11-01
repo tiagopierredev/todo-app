@@ -1,16 +1,24 @@
 import { createContext, useContext, useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from "react-native-toast-message";
+import { useMutation } from "react-query";
+import { login } from "../services/user";
+
+interface UserLoginProps {
+  email: string;
+  password: string;
+}
 
 interface UserProps {
-  id: string;
   name: string;
-  email: string;
 }
 
 const UserContext = createContext(
   {
     user: null as UserProps,
-    loginUser: (data: any) => { },
+    loginUser: async (data: any) => { },
     logoutUser: () => { },
+    isLoading: false,
   }
 );
 
@@ -21,8 +29,28 @@ export function useUserContext() {
 export function UserProvider({ children }) {
   const [user, setUser] = useState<UserProps | null>(null);
 
-  const loginUser = (userData: UserProps) => {
-    setUser(userData);
+  const { mutateAsync, isLoading } = useMutation(async (data: any) => {
+    const response = await login(data)
+    return response
+  }, {
+    onSuccess: async (response) => {
+      setUser(response.data?.user)
+      await AsyncStorage.setItem('@todo_token', response.data?.token)
+    },
+    onError: (error: any) => {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Unexpected Issue',
+        text2: error.message,
+        visibilityTime: 3000,
+        topOffset: 100,
+      });
+    }
+  })
+
+  const loginUser = async (userData: UserProps) => {
+    await mutateAsync(userData);
   };
 
   const logoutUser = () => {
@@ -30,7 +58,7 @@ export function UserProvider({ children }) {
   };
 
   return (
-    <UserContext.Provider value={{ user, loginUser, logoutUser }}>
+    <UserContext.Provider value={{ user, loginUser, logoutUser, isLoading }}>
       {children}
     </UserContext.Provider>
   );

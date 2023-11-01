@@ -7,17 +7,16 @@ import { z } from "zod";
 export async function checkTodo(request: FastifyRequest, reply: FastifyReply) {
   const checkTodoBodySchema = z.object({
     id: z.string().uuid(),
-    userId: z.string().uuid(),
   });
 
-  const { id, userId } = checkTodoBodySchema.parse(request.query);
+  const { id } = checkTodoBodySchema.parse(request.query);
 
   try {
     const checkTodo = makeCheckedTodoUseCase();
 
     await checkTodo.execute({
       id,
-      userId,
+      userId: request.user.sub,
     });
 
     return reply.status(200).send();

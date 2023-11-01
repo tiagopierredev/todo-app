@@ -5,13 +5,15 @@ import { createTodo } from "./controllers/createTodo";
 import { listTodo } from "./controllers/listTodo";
 import { checkTodo } from "./controllers/checkTodo";
 import { deleteTodo } from "./controllers/deleteTodo";
+import { verifyJwt } from "./middlewares/verify-jwt";
 
 export async function appRoutes(app: FastifyInstance) {
   app.post("/login", authenticate);
   app.post("/register", register);
 
-  app.post("/todo", createTodo);
-  app.get("/todo", listTodo);
-  app.patch("/todo", checkTodo);
-  app.delete("/todo", deleteTodo);
+  // Authenticated routes
+  app.post("/todo", { onRequest: [verifyJwt] }, createTodo);
+  app.get("/todo", { onRequest: [verifyJwt] }, listTodo);
+  app.patch("/todo", { onRequest: [verifyJwt] }, checkTodo);
+  app.delete("/todo", { onRequest: [verifyJwt] }, deleteTodo);
 }

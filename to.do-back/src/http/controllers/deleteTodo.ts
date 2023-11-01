@@ -7,17 +7,16 @@ import { z } from "zod";
 export async function deleteTodo(request: FastifyRequest, reply: FastifyReply) {
   const deleteTodoBodySchema = z.object({
     id: z.string().uuid(),
-    userId: z.string().uuid(),
   });
 
-  const { id, userId } = deleteTodoBodySchema.parse(request.query);
+  const { id } = deleteTodoBodySchema.parse(request.query);
 
   try {
     const deleteTodo = makeDeleteTodoUseCase();
 
     await deleteTodo.execute({
       id,
-      userId,
+      userId: request.user.sub,
     });
 
     return reply.status(200).send();

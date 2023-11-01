@@ -23,28 +23,9 @@ const schema = yup
     .required()
 
 export function Login({ navigation }) {
-    const { loginUser } = useUserContext()
+    const { loginUser, isLoading } = useUserContext()
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema)
-    })
-
-    const { mutateAsync, isLoading } = useMutation(async (data: SchemaProps) => {
-        const response = await login(data)
-        return response
-    }, {
-        onSuccess: (response) => {
-            loginUser(response.data)
-        },
-        onError: (error: any) => {
-            Toast.show({
-                type: 'error',
-                position: 'top',
-                text1: 'Unexpected Issue',
-                text2: error.message,
-                visibilityTime: 3000,
-                topOffset: 100,
-            });
-        }
     })
 
     function handleRegister() {
@@ -52,7 +33,7 @@ export function Login({ navigation }) {
     }
 
     async function submit(data: SchemaProps) {
-        await mutateAsync(data)
+        await loginUser(data)
     }
 
     return (

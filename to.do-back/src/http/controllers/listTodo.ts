@@ -5,17 +5,11 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 
 export async function listTodo(request: FastifyRequest, reply: FastifyReply) {
-  const createTodoBodySchema = z.object({
-    id: z.string().uuid(),
-  });
-
-  const { id } = createTodoBodySchema.parse(request.query);
-
   try {
     const listTodo = makeListTodoUseCase();
 
     const todos = await listTodo.execute({
-      id,
+      id: request.user.sub,
     });
 
     return reply.status(200).send({
