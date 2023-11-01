@@ -34,8 +34,6 @@ export class PrismaTodoRepository implements TodoRepository {
       },
     });
 
-    console.log();
-
     return {
       todos,
       count,

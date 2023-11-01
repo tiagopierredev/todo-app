@@ -22,14 +22,36 @@ export async function authenticate(
       password,
     });
 
-    const token = await reply.jwtSign({
-      sub: user.id,
-    });
+    const token = await reply.jwtSign(
+      {},
+      {
+        sign: {
+          sub: user.id,
+        },
+      }
+    );
 
-    return reply.status(200).send({
-      user: { name: user.name },
-      token,
-    });
+    const refreshToken = await reply.jwtSign(
+      {},
+      {
+        sign: {
+          sub: user.id,
+          expiresIn: "7d",
+        },
+      }
+    );
+
+    return reply
+      .status(200)
+      .setCookie("refreshToken", refreshToken, {
+        path: "/",
+        secure: true,
+        httpOnly: true,
+      })
+      .send({
+        user: { name: user.name },
+        token,
+      });
   } catch (err) {
     if (err instanceof InvalidCredentialsError) {
       return reply.status(409).send({

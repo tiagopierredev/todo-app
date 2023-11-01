@@ -53,7 +53,8 @@ export function UserProvider({ children }) {
     await mutateAsync(userData);
   };
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
+    await AsyncStorage.removeItem('@todo_token');
     setUser(null);
   };
 
